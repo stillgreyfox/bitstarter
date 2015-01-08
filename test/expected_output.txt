@@ -1,0 +1,27 @@
+$ ./grader.js -c checks-test-1.json -f test1.html 
+{
+    ".navigation": false,
+    "h1": true
+}
+
+$ ./grader.js -c checks-test-1.json -f test2.html 
+{
+    ".navigation": true,
+    "h1": true
+}
+
+$ ./grader.js -c checks-test-2.json -f test1.html 
+{
+    "div div div h1": true,
+    "div div.subheading": true,
+    "div.footer": true,
+    "title": true
+}
+
+$ ./grader.js -c checks-test-2.json -f test2.html 
+{
+    "div div div h1": true,
+    "div div.subheading": false,
+    "div.footer": false,
+    "title": true
+}
