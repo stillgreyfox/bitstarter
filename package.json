@@ -1,7 +1,7 @@
 {
-  "name": "node-js-sample",
-  "version": "0.1.0",
-  "description": "A sample Node.js app using Express 4",
+  "name": "bitstarter",
+  "version": "0.0.2",
+  "description": "My first bitstarter based on heroku node-js-sample",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -10,19 +10,23 @@
     "express": "^4.0.0"
   },
   "engines": {
-    "node": "0.10.x"
+    "node": "0.10.x",
+    "npm": "2.1.x"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/heroku/node-js-sample"
+    "url": "https://github.com/stillgreyfox/bitstarter"
   },
   "keywords": [
     "node",
     "heroku",
-    "express"
+    "express",
+    "startup",
+    "bitstarter"
   ],
-  "author": "Mark Pundsack",
+  "author": "Tom Gambone",
   "contributors": [
+    "Original author - Mark Pundsack",
     "Zeke Sikelianos <zeke@sikelianos.com> (http://zeke.sikelianos.com)"
   ],
   "license": "MIT"
