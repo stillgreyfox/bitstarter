@@ -44,18 +44,6 @@ var cheerioHtmlFile = function(htmlfile) {
     return cheerio.load(fs.readFileSync(htmlfile));
 };
 
-
-var cheerioHtmlURL = function(htmlurl) {
-    return cheerio.load(rest.get(htmlurl).on('complete', function(result) {
-      if (result instanceof Error) {
-        console.log('Error:', result.message);
-        this.retry(5000); // try again after 5 sec
-      } else {
-        return result;
-      }
-    }));
-};
-
 var loadChecks = function(checksfile) {
     return JSON.parse(fs.readFileSync(checksfile));
 };
@@ -65,10 +53,34 @@ var checkHtmlFile = function(htmlfile, checksfile) {
     var checks = loadChecks(checksfile).sort();
     var out = {};
     for(var ii in checks) {
-	var present = $(checks[ii]).length > 0;
-	out[checks[ii]] = present;
+        var present = $(checks[ii]).length > 0;
+        out[checks[ii]] = present;
     }
     return out;
+};
+
+var buildfn = function(checksfile) {
+    /*
+      not sure how this works, but it does error checking
+      and if the API response is good, it'll post-process to console
+    */
+    var checkHtmlURL = function(result) {
+        if (result instanceof Error) {
+            console.log('Error:', result.message);
+            this.retry(5000); // try again after 5 sec
+        } else {
+            $ = cheerio.load(result);
+            var checks = loadChecks(checksfile).sort();
+            var out = {};
+            for(var ii in checks) {
+                var present = $(checks[ii]).length > 0;
+                out[checks[ii]] = present;
+            }
+            var outJson = JSON.stringify(out, null, 4);
+            console.log(outJson);
+        }
+    };
+    return checkHtmlURL;
 };
 
 var clone = function(fn) {
@@ -86,9 +98,15 @@ if(require.main == module) {
         .option('-u, --url <html_url>', 'URL to index.html',
                 null, HTMLURL_DEFAULT)
         .parse(process.argv);
-    var checkJson = checkHtmlFile(program.file, program.checks);
-    var outJson = JSON.stringify(checkJson, null, 4);
-    console.log(outJson);
+    var checkJson;
+    if(program.url) {
+        var checkHtmlURL = buildfn(program.checks);
+        rest.get(program.url).on("complete", checkHtmlURL);
+    } else {
+        checkJson = checkHtmlFile(program.file, program.checks);
+        var outJson = JSON.stringify(checkJson, null, 4);
+        console.log(outJson);
+    }
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
